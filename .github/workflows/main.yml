@@ -1,0 +1,22 @@
+name: Build AtmoGrain
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -B build -G Xcode
+      - run: cmake --build build --config Release
+      - run: |
+          mkdir -p out
+          cp -r build/AtmoGrain_artefacts/Release/VST3/AtmoGrain.vst3 out/
+          cp -r build/AtmoGrain_artefacts/Release/AU/AtmoGrain.component out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AtmoGrain-macOS
+          path: out/
